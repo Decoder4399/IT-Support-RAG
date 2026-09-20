@@ -135,6 +135,7 @@ class RAGEngine:
         api_key="",
         model="meta-llama/llama-3.1-8b-instruct",
         chat_history=None,
+        stream=False,
     ):
         """
         Ask a question using the Advanced RAG pipeline.
@@ -173,19 +174,23 @@ class RAGEngine:
         candidates = hybrid_search(
             rewritten["rewritten"],
             keywords=rewritten["keywords"],
-            top_k=top_k * 3,
+            top_k=top_k * 2,
             model=self.embedding_model,
         )
         print(f"  Found {len(candidates)} candidates")
 
-        # Step 5c: Rerank with cross-encoder
-        print(f"\n[Step 5c] Reranking with cross-encoder...")
-        final_chunks = rerank_chunks(
-            rewritten["rewritten"],
-            candidates,
-            top_k=top_k,
-        )
-        print(f"  Reranked to {len(final_chunks)} chunks")
+        # Step 5c: Rerank with cross-encoder (skip if already few candidates)
+        if len(candidates) > top_k:
+            print(f"\n[Step 5c] Reranking with cross-encoder...")
+            final_chunks = rerank_chunks(
+                rewritten["rewritten"],
+                candidates,
+                top_k=top_k,
+            )
+            print(f"  Reranked to {len(final_chunks)} chunks")
+        else:
+            print(f"\n[Step 5c] Skipping rerank (only {len(candidates)} candidates)")
+            final_chunks = candidates
         for i, chunk in enumerate(final_chunks, 1):
             print(f"    {i}. {chunk['filename']} (rerank_score: {chunk.get('rerank_score', 'N/A')})")
 
@@ -198,7 +203,17 @@ class RAGEngine:
             api_key=api_key,
             model=model,
             chat_history=chat_history,
+            stream=stream,
         )
+
+        if stream:
+            return {
+                "answer": answer,
+                "sources": final_chunks,
+                "query": question,
+                "pipeline": pipeline_info,
+            }
+
         print(f"  Generated answer ({len(answer)} characters)")
 
         return {

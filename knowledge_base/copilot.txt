@@ -1,0 +1,648 @@
+# How to Access Microsoft Copilot
+
+**Document ID:** IT-COPILOT-001
+**Document Type:** IT Support / Access Guide
+**Domain:** Microsoft 365 / AI Services
+**Category:** Application Access
+**Version:** 1.0
+**Status:** Active
+**Audience:** Employees, Service Desk, IT Support
+
+---
+
+## 1. Purpose
+
+This document explains how an employee can access Microsoft Copilot using an organization-provided account.
+
+It also provides basic troubleshooting steps for common Copilot access problems.
+
+---
+
+## 2. Scope
+
+This document covers:
+
+* Accessing Microsoft Copilot
+* Signing in with an organizational account
+* Verifying the correct account
+* Basic Copilot access troubleshooting
+* License and entitlement checks
+* Browser troubleshooting
+* Escalation requirements
+
+This document does not define organizational licensing or security policies. Access depends on the organization's Microsoft 365 configuration and assigned licenses.
+
+---
+
+# 3. Key Terms
+
+### Microsoft Copilot
+
+Microsoft's AI assistant available across supported Microsoft products and experiences.
+
+### Organizational Account
+
+The Microsoft Entra ID / Microsoft 365 account provided by the organization.
+
+### Personal Microsoft Account
+
+A Microsoft account used for personal services and not necessarily associated with the organization.
+
+### License
+
+A Microsoft subscription or entitlement that determines which Copilot capabilities a user can access.
+
+### Microsoft 365
+
+Microsoft's cloud productivity platform containing services such as Outlook, Teams, Word, Excel, PowerPoint, and related services.
+
+### Microsoft Entra ID
+
+Microsoft's identity and access-management service used by organizations to authenticate users and control access to resources.
+
+---
+
+# 4. Prerequisites
+
+Before accessing Copilot, verify the following:
+
+1. User has an active organizational Microsoft account.
+2. User knows the organizational username and password.
+3. User can successfully authenticate to Microsoft 365.
+4. MFA is completed if required.
+5. The organization has enabled Copilot access for the user.
+6. The user's account has the required license or entitlement.
+7. The browser is supported and up to date.
+8. Network connectivity is available.
+
+---
+
+# 5. Standard Access Process
+
+The general workflow is:
+
+**Open Copilot → Sign In → Select Organizational Account → Authenticate → Complete MFA → Verify Access → Start Using Copilot**
+
+---
+
+# 6. Step 1 – Open Microsoft Copilot
+
+Open a supported web browser.
+
+Navigate to the organization's approved Copilot entry point.
+
+If the organization provides a specific Copilot URL or Microsoft 365 portal link, use the link provided by the organization's IT team.
+
+---
+
+# 7. Step 2 – Sign In
+
+Select:
+
+**Sign In**
+
+Enter the organizational Microsoft account.
+
+Example:
+
+```text
+username@company.com
+```
+
+Do not use a personal Microsoft account unless the organization's policy explicitly allows it.
+
+---
+
+# 8. Step 3 – Select the Correct Account
+
+If multiple Microsoft accounts are signed in to the browser, verify that the organizational account is selected.
+
+### Example
+
+```text
+Personal Account
+    ↓
+Company Account
+    ↓
+Select Company Account
+```
+
+Using the wrong Microsoft account can result in:
+
+* Copilot not being available
+* Incorrect Copilot experience
+* Access denied
+* Missing organizational features
+* License-related errors
+
+---
+
+# 9. Step 4 – Complete Authentication
+
+Enter the required credentials.
+
+If the organization uses MFA, complete the required authentication method.
+
+Possible MFA methods include:
+
+* Authenticator application
+* Security key
+* SMS
+* Phone verification
+* Other organization-approved authentication methods
+
+---
+
+# 10. Step 5 – Verify Copilot Access
+
+After authentication, verify that Copilot is available.
+
+Check for:
+
+* Copilot interface
+* Chat input
+* Organization-specific Copilot features
+* Microsoft 365 Copilot integration where applicable
+
+### Expected Result
+
+The user can interact with Copilot using the organization's authorized account.
+
+---
+
+# 11. Access Through Microsoft 365 Applications
+
+Depending on the organization's licensing and configuration, Copilot may be available within supported Microsoft 365 applications.
+
+Examples include:
+
+* Microsoft Teams
+* Microsoft Outlook
+* Microsoft Word
+* Microsoft Excel
+* Microsoft PowerPoint
+
+Availability depends on:
+
+* User license
+* Organization configuration
+* Application version
+* Platform
+* Administrative policies
+
+---
+
+# 12. Verify the User Account
+
+If Copilot is unavailable, first verify the signed-in account.
+
+### Steps
+
+1. Open the Microsoft account/profile menu.
+2. Identify the signed-in account.
+3. Confirm it is the organizational account.
+4. Sign out of incorrect accounts if necessary.
+5. Sign in again using the organizational account.
+6. Retry Copilot.
+
+---
+
+# 13. Verify License / Entitlement
+
+If the correct account is being used but Copilot is unavailable, the user's entitlement should be checked by the appropriate Microsoft 365 administrator.
+
+### Service Desk Information
+
+Collect:
+
+* Employee ID
+* User ID
+* Organizational email address
+* Microsoft 365 application affected
+* Copilot access location
+* Error message
+* Screenshot
+* Date/time of issue
+
+### Escalation
+
+Escalate license-related issues to the appropriate Microsoft 365 / Identity / Licensing team.
+
+---
+
+# 14. Common Issue: Copilot Is Not Visible
+
+## Symptoms
+
+The user signs in successfully but cannot find Copilot.
+
+## Possible Causes
+
+1. Copilot is not enabled for the user.
+2. Required license is not assigned.
+3. Incorrect Microsoft account is being used.
+4. Organization policy restricts access.
+5. Application or browser is outdated.
+6. Service configuration has not synchronized.
+
+## Troubleshooting
+
+### Step 1
+
+Verify the signed-in organizational account.
+
+### Step 2
+
+Verify that the user is entitled to the required Copilot service.
+
+### Step 3
+
+Sign out and sign in again.
+
+### Step 4
+
+Refresh the Microsoft 365 application or browser session.
+
+### Step 5
+
+Try accessing Copilot from another supported browser.
+
+### Step 6
+
+If the issue continues, escalate to Microsoft 365 administration.
+
+---
+
+# 15. Common Issue: Access Denied
+
+## Symptoms
+
+The user receives an access-denied message.
+
+## Possible Causes
+
+* User does not have required entitlement.
+* Organizational policy blocks access.
+* Conditional-access policy blocks authentication.
+* Incorrect account.
+* Authentication failure.
+
+## Troubleshooting
+
+1. Verify the user's account.
+2. Verify MFA status.
+3. Verify device compliance if applicable.
+4. Verify license/entitlement.
+5. Check whether other Microsoft 365 services work.
+6. Capture the exact error message.
+7. Escalate to the appropriate support team.
+
+---
+
+# 16. Common Issue: Copilot Works for Other Users but Not One User
+
+## Possible Causes
+
+This situation may indicate a user-specific configuration issue.
+
+Check:
+
+* User account status
+* Assigned license
+* Group membership
+* Application assignment
+* Conditional-access policies
+* Service configuration
+* Account synchronization
+
+### Escalation Information
+
+Provide the affected user's:
+
+* User ID
+* Department
+* License information
+* Error message
+* Timestamp
+* Screenshot
+* Application/platform
+
+---
+
+# 17. Common Issue: Copilot Not Working in a Microsoft 365 Application
+
+## Symptoms
+
+Copilot is available generally but does not appear in an application such as Word, Excel, PowerPoint, Outlook, or Teams.
+
+## Troubleshooting
+
+1. Confirm the user has the required entitlement.
+2. Verify the application is supported.
+3. Update the application.
+4. Restart the application.
+5. Sign out and sign in again.
+6. Verify the organizational account.
+7. Check organizational policy.
+8. Escalate if the issue persists.
+
+---
+
+# 18. Browser Troubleshooting
+
+If Copilot does not load correctly:
+
+1. Refresh the page.
+2. Open a private/incognito browser window.
+3. Sign in using the organizational account.
+4. Clear relevant browser cache/cookies if permitted.
+5. Disable problematic browser extensions.
+6. Try another supported browser.
+7. Verify network connectivity.
+8. Retry access.
+
+### Expected Result
+
+Copilot loads successfully.
+
+---
+
+# 19. Multiple Microsoft Accounts
+
+Having multiple Microsoft accounts in the same browser can cause account-selection problems.
+
+### Symptoms
+
+* Wrong account appears.
+* Copilot is unavailable.
+* User is redirected to a personal account.
+* Access appears different between browser sessions.
+
+### Resolution
+
+1. Check the active account.
+2. Sign out of unnecessary Microsoft accounts.
+3. Open a new browser session.
+4. Sign in with the organizational account.
+5. Retry Copilot.
+
+---
+
+# 20. Security Guidelines
+
+Users should:
+
+* Use only the approved organizational account.
+* Follow organizational AI usage policies.
+* Avoid entering confidential information unless explicitly permitted.
+* Follow data-classification requirements.
+* Do not share credentials.
+* Do not bypass organizational access controls.
+* Report suspicious authentication prompts.
+* Follow the organization's acceptable-use policy.
+
+---
+
+# 21. Data Handling
+
+Before entering information into Copilot, determine whether the information is permitted under the organization's AI and data-security policies.
+
+Examples of potentially sensitive information include:
+
+* Customer information
+* Passwords
+* Authentication secrets
+* API keys
+* Confidential business information
+* Financial information
+* Personal information
+* Security credentials
+
+Users should follow organizational data-classification requirements before submitting information to AI services.
+
+---
+
+# 22. Service Desk Troubleshooting Checklist
+
+```text
+[ ] User identity verified
+[ ] Organizational account confirmed
+[ ] MFA completed
+[ ] Device/network connectivity checked
+[ ] Copilot access location confirmed
+[ ] License/entitlement checked
+[ ] Application version checked
+[ ] Browser tested
+[ ] Sign-out/sign-in performed
+[ ] Error message captured
+[ ] Screenshot captured
+[ ] Timestamp captured
+[ ] Escalation completed if required
+```
+
+---
+
+# 23. Information Required for Escalation
+
+When escalating a Copilot access issue, provide:
+
+**User Information**
+
+* Employee ID
+* Username
+* Organizational email
+
+**Environment**
+
+* Operating system
+* Browser/application
+* Application version
+* Device type
+
+**Access Information**
+
+* Copilot entry point
+* Microsoft 365 application
+* License/entitlement status
+* Authentication status
+
+**Error Information**
+
+* Exact error message
+* Error code
+* Screenshot
+* Date/time
+* Steps already performed
+
+---
+
+# 24. Troubleshooting Decision Tree
+
+```text
+User cannot access Copilot
+          |
+          v
+Is user signed in?
+       /     \
+     No       Yes
+     |         |
+Sign in        v
+          Correct organizational
+              account?
+             /      \
+           No        Yes
+           |          |
+     Switch account   v
+                 MFA successful?
+                  /        \
+                No          Yes
+                |            |
+          Resolve MFA        v
+                       Entitled/Licensed?
+                         /        \
+                       No          Yes
+                       |            |
+                  Escalate          v
+                              Check browser/
+                              application
+                                   |
+                                   v
+                              Still failing?
+                               /       \
+                             Yes        No
+                              |          |
+                           Escalate    Resolved
+```
+
+---
+
+# 25. Resolution Validation
+
+The issue is considered resolved when:
+
+1. User successfully signs in.
+2. Correct organizational account is confirmed.
+3. Copilot is visible.
+4. User can submit a test prompt.
+5. Copilot returns a response.
+6. Required Microsoft 365 integration works if applicable.
+
+---
+
+# 26. Ticket Closure Template
+
+**Resolution Summary:**
+
+```text
+User reported inability to access Microsoft Copilot.
+
+Verified:
+- Organizational account
+- Authentication/MFA
+- Copilot entitlement
+- Browser/application configuration
+
+Troubleshooting performed:
+1. ____________________
+2. ____________________
+3. ____________________
+
+Root Cause:
+____________________
+
+Resolution:
+____________________
+
+Validation:
+User successfully accessed Copilot and confirmed functionality.
+
+Status:
+Resolved
+```
+
+---
+
+# 27. RAG Retrieval Metadata
+
+```yaml
+document_id: IT-COPILOT-001
+document_type: access_guide
+domain: Microsoft_365
+category: AI_services
+subcategory: Copilot_access
+audience:
+  - employees
+  - service_desk
+  - IT_support
+  - Microsoft_365_administrators
+
+keywords:
+  - Microsoft Copilot
+  - Copilot access
+  - Microsoft 365 Copilot
+  - Copilot login
+  - Copilot sign in
+  - Copilot license
+  - Copilot entitlement
+  - Copilot access denied
+  - Copilot troubleshooting
+  - Microsoft 365
+  - organizational account
+  - MFA
+  - conditional access
+
+related_topics:
+  - Microsoft 365
+  - Identity and Access Management
+  - MFA
+  - Conditional Access
+  - License Management
+  - Endpoint Management
+
+version: "1.0"
+status: active
+```
+
+---
+
+# 28. RAG Query Examples
+
+The knowledge base should support questions such as:
+
+* How do I access Copilot?
+* How do I log in to Microsoft Copilot?
+* Can I use my company account for Copilot?
+* Why can't I see Copilot?
+* Copilot is not showing in Microsoft 365. What should I check?
+* Why does Copilot say access denied?
+* How do I troubleshoot Copilot login problems?
+* Copilot works for my colleague but not me. What should I check?
+* What information should I collect before escalating a Copilot issue?
+* What should I do if Copilot does not appear in Word?
+* Why is Copilot unavailable even though I can access Microsoft 365?
+* What should I check if the wrong Microsoft account is being used?
+* What are the prerequisites for accessing Copilot?
+
+---
+
+# 29. Process Summary
+
+```text
+Organizational Account
+        ↓
+Authentication
+        ↓
+MFA
+        ↓
+License / Entitlement
+        ↓
+Organizational Policy
+        ↓
+Copilot Access
+        ↓
+Application Access
+        ↓
+Successful Test
+```
+
+**End of Document**

@@ -64,9 +64,14 @@ def store_in_vectordb(chunks: list[dict]) -> chromadb.Collection:
     print(f"Creating ChromaDB client (persist dir: {CHROMA_PERSIST_DIR})")
     client = chromadb.PersistentClient(path=CHROMA_PERSIST_DIR)
 
-    # Step 2: Create or get the collection
-    # A collection is like a table - it holds all our vectors
-    # We use get_or_create so we can run this multiple times safely
+    # Step 2: Delete existing collection to ensure clean rebuild
+    try:
+        client.delete_collection(COLLECTION_NAME)
+        print(f"Deleted old collection: {COLLECTION_NAME}")
+    except Exception:
+        pass
+
+    # Step 3: Create fresh collection
     print(f"Creating collection: {COLLECTION_NAME}")
     collection = client.get_or_create_collection(
         name=COLLECTION_NAME,

@@ -52,10 +52,10 @@ def rewrite_query(
             "original": "The original query"
         }
     """
-    if not api_key:
+    if not api_key or not chat_history:
         return {
             "rewritten": query,
-            "keywords": query.split(),
+            "keywords": [w for w in query.split() if len(w) > 2],
             "original": query,
         }
 

@@ -43,6 +43,7 @@ def generate_answer(
     api_key: str = "",
     model: str = "meta-llama/llama-3.1-8b-instruct",
     chat_history: list[dict] = None,
+    stream: bool = False,
 ) -> str:
     """
     Generate an answer using the LLM with retrieved context and conversation history.
@@ -54,9 +55,10 @@ def generate_answer(
         api_key: OpenRouter API key
         model: LLM model name
         chat_history: Previous conversation turns
+        stream: If True, return a generator that yields chunks
 
     Returns:
-        The LLM's generated answer as a string
+        The LLM's generated answer as a string, or a generator if stream=True
     """
     if not api_key:
         return ("Error: No API key configured. "
@@ -69,12 +71,12 @@ def generate_answer(
         {"role": "system", "content": system_prompt or DEFAULT_SYSTEM_PROMPT},
     ]
 
-    # Add last 5 turns of history for context
+    # Add last 3 turns of history for context
     if chat_history:
-        for msg in chat_history[-5:]:
+        for msg in chat_history[-3:]:
             messages.append({
                 "role": msg["role"],
-                "content": msg["content"][:500],  # truncate long messages
+                "content": msg["content"][:300],
             })
 
     # Add current query with context
@@ -101,8 +103,16 @@ def generate_answer(
         model=model,
         messages=messages,
         temperature=0.3,
-        max_tokens=1000,
+        max_tokens=500,
+        stream=stream,
     )
+
+    if stream:
+        def _generate():
+            for chunk in response:
+                if chunk.choices[0].delta.content:
+                    yield chunk.choices[0].delta.content
+        return _generate()
 
     return response.choices[0].message.content
 
@@ -113,7 +123,7 @@ def format_context(chunks: list[dict]) -> str:
     for i, chunk in enumerate(chunks, 1):
         filename = chunk.get("filename", "unknown")
         score = chunk.get("rerank_score") or chunk.get("score", 0)
-        content = chunk.get("content", "")
+        content = chunk.get("content", "")[:500]
         section = chunk.get("section", "")
         header = f" [Section: {section}]" if section else ""
         context_parts.append(

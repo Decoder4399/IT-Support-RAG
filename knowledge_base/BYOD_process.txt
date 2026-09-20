@@ -1,0 +1,699 @@
+# BYOD (Bring Your Own Device) Process
+
+**Document ID:** IT-BYOD-001
+**Document Type:** IT Process / Troubleshooting Knowledge Base
+**Domain:** IT Support / Endpoint Management / Security
+**Version:** 1.0
+**Status:** Active
+**Audience:** Employees, Service Desk, IT Support, Endpoint Administrators, Security Teams
+
+---
+
+## 1. Purpose
+
+The Bring Your Own Device (BYOD) process defines how employees can use personally owned devices to access organizational resources.
+
+The process ensures that personally owned devices meet organizational security requirements before accessing corporate applications, email, files, VPN, or other business resources.
+
+---
+
+## 2. Scope
+
+This process applies to personally owned:
+
+* Windows laptops
+* macOS laptops
+* Android phones and tablets
+* iPhones and iPads
+* Other supported personal endpoints approved by the organization
+
+The process covers:
+
+1. BYOD request
+2. Eligibility verification
+3. User consent
+4. Device enrollment
+5. Security compliance validation
+6. Application/resource access
+7. Device monitoring
+8. Device removal
+9. Lost or stolen device handling
+10. BYOD troubleshooting
+
+---
+
+## 3. Key Terms
+
+### BYOD
+
+Bring Your Own Device. A policy allowing employees to use personally owned devices for authorized business activities.
+
+### MDM
+
+Mobile Device Management. A platform used to manage and secure supported mobile devices.
+
+### UEM
+
+Unified Endpoint Management. A platform capable of managing multiple endpoint types from a centralized system.
+
+### Device Enrollment
+
+The process of registering a personal device with the organization's approved device-management platform.
+
+### Compliance
+
+The state in which a device satisfies the organization's required security controls.
+
+### Conditional Access
+
+An access-control mechanism that allows or denies access based on conditions such as device compliance, user identity, location, or authentication method.
+
+### Corporate Data
+
+Information owned or controlled by the organization.
+
+### Personal Data
+
+Information belonging to the device owner that is not organizational data.
+
+---
+
+# 4. BYOD Process Overview
+
+The standard BYOD workflow is:
+
+**Employee Request → Eligibility Check → Approval → User Consent → Device Enrollment → Security Validation → Application Access → Continuous Compliance → Offboarding**
+
+---
+
+# 5. BYOD Request Process
+
+## Step 1: Employee Submits BYOD Request
+
+The employee submits a BYOD request through the approved IT service portal.
+
+### Required Information
+
+* Employee name
+* Employee ID
+* Department
+* Manager
+* Device type
+* Device operating system
+* OS version
+* Device ownership confirmation
+* Business justification
+* Applications/resources required
+
+### Expected Result
+
+A BYOD request/ticket is created successfully.
+
+---
+
+# 6. Eligibility Verification
+
+The Service Desk or Endpoint Management team verifies whether the device is supported.
+
+## Verify
+
+* Device type
+* Operating system
+* OS version
+* Security patch level
+* Device ownership
+* Organizational policy eligibility
+* Required applications
+* Required security controls
+
+### Expected Result
+
+The device is identified as either:
+
+**Eligible**
+
+or
+
+**Not Eligible**
+
+### If Device Is Not Eligible
+
+The request should be rejected or returned to the employee with the reason.
+
+Common reasons include:
+
+* Unsupported operating system
+* Device does not meet security requirements
+* Device is rooted/jailbroken
+* Required security software cannot be installed
+* Device cannot support required management controls
+
+---
+
+# 7. Manager Approval
+
+If manager approval is required by organizational policy, the request is routed to the employee's manager.
+
+### Manager Reviews
+
+* Business requirement
+* Requested access
+* Device type
+* Employee role
+* Data sensitivity
+
+### Possible Outcomes
+
+**Approved**
+
+or
+
+**Rejected**
+
+or
+
+**Additional Information Required**
+
+---
+
+# 8. User Consent
+
+Before enrollment, the employee must review and accept the organization's BYOD policy.
+
+The employee should understand:
+
+* What organizational data can be accessed
+* What security controls are required
+* What information the organization can manage
+* What happens if the device becomes non-compliant
+* What happens if the device is lost or stolen
+* How corporate data can be removed
+* Privacy limitations
+* Responsibilities of the device owner
+
+### Expected Result
+
+User provides required consent.
+
+---
+
+# 9. Device Enrollment
+
+After approval and consent, the device is enrolled using the organization's approved endpoint-management platform.
+
+## General Enrollment Process
+
+1. Install the approved management application if required.
+2. Sign in using the organizational account.
+3. Authenticate using the organization's approved authentication method.
+4. Accept the enrollment terms.
+5. Allow required management permissions.
+6. Complete device registration.
+7. Wait for configuration policies to apply.
+
+### Expected Result
+
+The device appears as an enrolled device in the endpoint-management platform.
+
+---
+
+# 10. Security Compliance Validation
+
+After enrollment, the device is evaluated against organizational security requirements.
+
+## Typical Security Checks
+
+* Supported operating system
+* Latest required security updates
+* Screen lock enabled
+* Password/PIN configured
+* Encryption enabled where required
+* Device not rooted/jailbroken
+* Approved security software installed
+* Organizational management profile installed
+* Required configuration policies applied
+
+### Compliance Status
+
+The device may be classified as:
+
+* Compliant
+* Non-compliant
+* Pending
+* Unknown
+
+---
+
+# 11. Access Provisioning
+
+Once the device satisfies the required controls, access can be granted to approved organizational resources.
+
+Examples include:
+
+* Corporate email
+* Collaboration applications
+* Enterprise applications
+* VPN
+* Internal portals
+* Document management systems
+* Business applications
+
+Access should follow the principle of **least privilege**.
+
+Employees should receive only the access required for their job responsibilities.
+
+---
+
+# 12. Conditional Access
+
+Organizations may use conditional-access policies to control access.
+
+Example conditions:
+
+```text
+User authenticated
+        |
+        v
+Device registered?
+        |
+     Yes/No
+        |
+        v
+Device compliant?
+        |
+     Yes/No
+        |
+        v
+MFA completed?
+        |
+     Yes/No
+        |
+        v
+Access Allowed / Access Denied
+```
+
+### Access Denied Conditions
+
+Access may be denied when:
+
+* Device is not enrolled
+* Device is non-compliant
+* User authentication fails
+* MFA requirement is not satisfied
+* Device is blocked
+* User account is disabled
+
+---
+
+# 13. BYOD Security Controls
+
+The organization may enforce controls such as:
+
+* MFA
+* Device encryption
+* Screen lock
+* Password/PIN requirements
+* Automatic screen timeout
+* Security patch requirements
+* Application protection
+* Data-loss prevention
+* Copy/paste restrictions
+* Corporate data separation
+* Remote corporate-data removal
+
+The exact controls depend on organizational security policy.
+
+---
+
+# 14. Corporate Data Protection
+
+Corporate information accessed from a personal device must be protected according to organizational policy.
+
+Possible controls include:
+
+* Application-level protection
+* Managed application containers
+* Encryption
+* Restricted copy/paste
+* Restricted screenshots
+* Restricted file sharing
+* Corporate account isolation
+* Corporate data removal during offboarding
+
+Personal data should not be accessed or removed unless explicitly permitted by organizational policy and applicable law.
+
+---
+
+# 15. Lost or Stolen BYOD Device
+
+If a BYOD device containing or providing access to corporate information is lost or stolen, the employee should immediately notify the Service Desk or security team.
+
+## Employee Actions
+
+1. Report the incident immediately.
+2. Provide device details.
+3. Provide approximate time of loss.
+4. Confirm whether the device had access to corporate applications.
+5. Follow security-team instructions.
+
+## IT/Security Actions
+
+1. Verify the device identity.
+2. Block or suspend corporate access where required.
+3. Revoke active sessions/tokens where appropriate.
+4. Remove corporate data where supported.
+5. Reset or revoke credentials if necessary.
+6. Investigate potential security exposure.
+7. Document the incident.
+
+---
+
+# 16. Device Replacement
+
+When an employee replaces their personal device:
+
+1. Submit a new BYOD request if required.
+2. Enroll the new device.
+3. Complete compliance checks.
+4. Validate application access.
+5. Remove the old device from organizational management.
+6. Remove corporate data from the old device where applicable.
+
+---
+
+# 17. BYOD Offboarding
+
+BYOD access must be removed when:
+
+* Employee leaves the organization.
+* Employee changes role.
+* Device is no longer authorized.
+* Device becomes permanently non-compliant.
+* BYOD access is revoked.
+* Device is replaced.
+
+## Offboarding Steps
+
+1. Disable required corporate access.
+2. Revoke authentication sessions/tokens where applicable.
+3. Remove corporate management profile where applicable.
+4. Remove corporate data from managed applications.
+5. Remove the device from endpoint-management records.
+6. Confirm that personal data remains unaffected where required by policy.
+7. Close the BYOD request/ticket.
+
+---
+
+# 18. BYOD Troubleshooting
+
+## Issue: Device Cannot Enroll
+
+### Symptoms
+
+* Enrollment fails.
+* Device registration does not complete.
+* Management application reports an error.
+
+### Possible Causes
+
+* Unsupported OS version
+* Incorrect organizational account
+* Enrollment restriction
+* Existing management profile
+* Network connectivity issue
+* Device already registered
+
+### Troubleshooting
+
+1. Verify the operating system version.
+2. Confirm the user is using the correct organizational account.
+3. Check network connectivity.
+4. Verify enrollment eligibility.
+5. Check whether the device is already registered.
+6. Remove conflicting management configuration if permitted.
+7. Retry enrollment.
+8. Escalate to Endpoint Management if enrollment continues to fail.
+
+---
+
+# 19. Issue: Device Shows Non-Compliant
+
+### Symptoms
+
+The device is enrolled but corporate applications cannot be accessed.
+
+### Possible Causes
+
+* Missing security update
+* Encryption disabled
+* Screen lock disabled
+* Device is rooted/jailbroken
+* Required security application missing
+* Policy synchronization failure
+
+### Troubleshooting
+
+1. Open the organization's device-management application.
+2. Check the compliance status.
+3. Identify the failed compliance requirement.
+4. Correct the failed requirement.
+5. Synchronize the device with the management platform.
+6. Wait for the compliance status to update.
+7. Retry application access.
+
+### Expected Result
+
+Device status changes to **Compliant**.
+
+---
+
+# 20. Issue: Corporate Application Access Denied
+
+### Symptoms
+
+The device is enrolled but the user cannot access a corporate application.
+
+### Check
+
+1. User account status
+2. Device enrollment status
+3. Device compliance status
+4. MFA status
+5. Application assignment
+6. Conditional-access policy
+7. Network connectivity
+8. Application version
+
+### Resolution
+
+Correct the failed condition and retry authentication.
+
+### Escalation
+
+Escalate to the Identity/Access Management or Application Support team when the device is compliant but access remains denied.
+
+---
+
+# 21. Issue: BYOD Device Not Appearing in Management Portal
+
+### Troubleshooting
+
+1. Confirm enrollment completed successfully.
+2. Verify the correct organizational account was used.
+3. Check synchronization status.
+4. Trigger a manual device synchronization.
+5. Verify enrollment restrictions.
+6. Check whether the device is registered under another account.
+7. Review endpoint-management logs.
+8. Escalate to Endpoint Management.
+
+---
+
+# 22. Issue: Corporate Data Removal Failed
+
+### Possible Causes
+
+* Device is offline.
+* Management application was removed.
+* Device is no longer enrolled.
+* Network connectivity is unavailable.
+* Management command has not synchronized.
+
+### Troubleshooting
+
+1. Verify the device's last communication time.
+2. Check device enrollment status.
+3. Confirm network connectivity.
+4. Send the data-removal command again if permitted.
+5. Monitor command status.
+6. Escalate to Security/Endpoint Management if required.
+
+---
+
+# 23. Service Desk Information to Collect
+
+For every BYOD incident, collect:
+
+* Employee ID
+* Username
+* Device type
+* Manufacturer
+* Model
+* Operating system
+* OS version
+* Device-management status
+* Compliance status
+* Application affected
+* Error message
+* Error code
+* Date/time of issue
+* Network type
+* Screenshot where appropriate
+* Recent device changes
+* Troubleshooting already performed
+
+---
+
+# 24. Escalation Matrix
+
+| Issue                            | Primary Team        | Secondary Team      |
+| -------------------------------- | ------------------- | ------------------- |
+| Enrollment failure               | Endpoint Management | Security            |
+| Compliance issue                 | Endpoint Management | Security            |
+| Authentication issue             | IAM                 | Security            |
+| Application access               | Application Support | IAM                 |
+| Lost device                      | Service Desk        | Security            |
+| Corporate data exposure          | Security            | Incident Response   |
+| Device-management platform issue | Endpoint Management | Platform Vendor     |
+| Network issue                    | Network Team        | Endpoint Management |
+
+---
+
+# 25. BYOD Ticket Template
+
+**Ticket Title:** BYOD - `<Issue>`
+
+**Employee ID:**
+**Username:**
+**Device:**
+**OS:**
+**OS Version:**
+**Enrollment Status:**
+**Compliance Status:**
+**Application:**
+**Error Message:**
+**Error Code:**
+**Issue Start Time:**
+
+### Troubleshooting Performed
+
+1.
+2.
+3.
+4.
+
+### Root Cause
+
+`<Document confirmed root cause>`
+
+### Resolution
+
+`<Document resolution>`
+
+### Validation
+
+`<Document how successful resolution was confirmed>`
+
+### Escalation
+
+`<Team / Reason / Timestamp>`
+
+---
+
+# 26. RAG Retrieval Metadata
+
+```yaml
+document_id: IT-BYOD-001
+document_type: IT_process
+domain: endpoint_management
+category: BYOD
+subcategory: device_management
+audience:
+  - service_desk
+  - endpoint_support
+  - employees
+  - security
+keywords:
+  - BYOD
+  - bring your own device
+  - personal device
+  - device enrollment
+  - device compliance
+  - MDM
+  - UEM
+  - conditional access
+  - corporate data
+  - mobile device
+  - endpoint security
+version: "1.0"
+status: active
+```
+
+---
+
+# 27. RAG Question Examples
+
+The knowledge base should support questions such as:
+
+### General
+
+* What is the BYOD process?
+* How do I enroll my personal device?
+* What devices are supported for BYOD?
+* What happens after BYOD approval?
+
+### Enrollment
+
+* Why can't I enroll my personal laptop?
+* What information is required for BYOD enrollment?
+* How do I check whether my device is enrolled?
+
+### Compliance
+
+* Why is my BYOD device showing non-compliant?
+* What should I check when my personal device becomes non-compliant?
+* What security requirements are normally checked?
+
+### Access
+
+* Why can't I access corporate applications from my personal phone?
+* What should I check if conditional access blocks my device?
+* Does device compliance affect application access?
+
+### Security
+
+* What should I do if my BYOD device is lost?
+* How is corporate data protected on a personal device?
+* What happens to corporate data when BYOD access is removed?
+
+### Offboarding
+
+* How is a BYOD device removed?
+* What happens when an employee leaves the organization?
+* How is corporate data removed from a personal device?
+
+---
+
+# 28. Important Process Principle
+
+BYOD access should be granted only when the user, device, application, and security requirements satisfy the organization's approved policies.
+
+**Employee → Identity Verification → Device Enrollment → Security Validation → Compliance → Controlled Access → Continuous Monitoring → Offboarding**
+
+---
+
+# 29. Document Change History
+
+| Version | Date       | Change                       |
+| ------- | ---------- | ---------------------------- |
+| 1.0     | 2026-09-20 | Initial BYOD process created |
