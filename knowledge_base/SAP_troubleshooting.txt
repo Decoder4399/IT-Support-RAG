@@ -1,0 +1,111 @@
+SAP TROUBLESHOOTING KNOWLEDGE BASE
+Version: 1.0
+Domain: SAP Support / SAP Basis / Application Support
+
+==================================================
+ISSUE ID: SAP-LOGIN-001
+TITLE: SAP GUI Login Failure
+CATEGORY: SAP GUI
+SEVERITY: Medium
+COMPONENT: SAP Logon / Authentication
+KEYWORDS:
+SAP login, SAP GUI, authentication, login failure,
+connection failure, password, user account
+
+SYMPTOMS:
+- User cannot log in to SAP.
+- SAP GUI displays "Name or password is incorrect."
+- User may receive a connection error.
+
+POSSIBLE CAUSES:
+1. Incorrect username.
+2. Incorrect password.
+3. User account is locked.
+4. Password has expired.
+5. SAP system is unavailable.
+6. Network connectivity problem.
+
+PREREQUISITES:
+- SAP GUI access.
+- Valid SAP user ID.
+- Appropriate support authorization.
+
+TROUBLESHOOTING STEPS:
+
+STEP 1:
+Verify the SAP system selected in SAP Logon.
+
+ACTION:
+Open SAP Logon and confirm that the user is connecting
+to the correct SAP system and client.
+
+EXPECTED RESULT:
+Correct SAP system and client are selected.
+
+STEP 2:
+Verify network connectivity.
+
+ACTION:
+Check whether the SAP application server is reachable
+from the user's machine.
+
+EXPECTED RESULT:
+Network connectivity is available.
+
+STEP 3:
+Check the user account.
+
+TRANSACTION:
+SU01
+
+ACTION:
+Search for the affected user and verify:
+- User exists.
+- User is not locked.
+- User validity dates are correct.
+
+EXPECTED RESULT:
+User account is active and valid.
+
+STEP 4:
+Check password status.
+
+ACTION:
+Verify whether the password has expired.
+
+EXPECTED RESULT:
+Password is valid.
+
+RESOLUTION:
+If the account is locked, unlock the account according
+to the organization's access-control procedure.
+
+If the password has expired, perform the approved
+password-reset procedure.
+
+VALIDATION:
+Ask the user to log in again.
+
+SUCCESS CRITERIA:
+User successfully authenticates and reaches the SAP
+initial screen.
+
+ESCALATION:
+Escalate to SAP Basis if:
+- SAP system is unavailable.
+- Multiple users are affected.
+- Application server connectivity is failing.
+
+EVIDENCE TO COLLECT:
+- User ID
+- Client
+- SAP system
+- Error message
+- Timestamp
+- Screenshot
+- Affected application server
+
+RELATED ISSUES:
+SAP-LOGIN-002
+SAP-AUTH-001
+SAP-CONNECT-001
