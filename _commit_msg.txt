@@ -1,0 +1,13 @@
+feat: upgrade to Advanced RAG pipeline
+
+- Token-aware chunking with tiktoken (1000 tokens, 200 overlap)
+- Markdown header-aware splitting for better context preservation
+- ChromaDB cosine distance for proper similarity scoring
+- Query rewriting with LLM (pronoun resolution, keyword extraction)
+- Hybrid search: BM25 keyword + semantic embedding via RRF
+- Cross-encoder reranking (ms-marco-MiniLM-L-6-v2)
+- Score threshold (0.3) + deduplication by source file
+- Conversation memory (last 5 turns in LLM prompt)
+- New files: step5a, step5b, step5c
+- Updated UI with Advanced RAG indicator
+- Updated How RAG Works animation (8 steps)

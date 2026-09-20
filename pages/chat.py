@@ -53,9 +53,13 @@ def render_sources(sources, msg_idx):
     with st.expander(f"Sources ({len(sources)} documents)", expanded=False):
         for i, src in enumerate(sources, 1):
             fname = src.get("filename", "?")
+            rerank = src.get("rerank_score")
             score = src.get("score", 0)
+            score_display = f"rerank: `{rerank:.3f}`" if rerank else f"similarity: `{score:.3f}`"
             text = src.get("content", "")
-            st.markdown(f"**{i}. {fname}** -- relevance: `{score:.3f}`", unsafe_allow_html=True)
+            section = src.get("section", "")
+            section_display = f" | Section: {section}" if section else ""
+            st.markdown(f"**{i}. {fname}**{section_display} -- {score_display}", unsafe_allow_html=True)
             st.text_area(
                 "preview", value=text[:400] + ("..." if len(text) > 400 else ""),
                 height=80, disabled=True,
@@ -74,7 +78,7 @@ def render():
     st.markdown(
         f'<div class="header-bar">'
         f'<div><h1>IT Support Chatbot</h1>'
-        f'<p>Retrieval-Augmented Generation -- Ask IT questions, get sourced answers</p></div>'
+        f'<p>Advanced RAG -- Query Rewriting + Hybrid Search + Reranking</p></div>'
         f'<div style="text-align:right;">'
         f'<span class="status-badge {status_cls}">{status_txt}</span>'
         f'<div style="color:#8b949e;font-size:0.72rem;margin-top:3px;">{model_txt}</div>'
@@ -153,12 +157,13 @@ def render():
         st.session_state.messages.append({"role": "user", "content": prompt})
 
         with st.chat_message("assistant"):
-            with st.spinner("Searching & generating answer..."):
+            with st.spinner("Rewriting query, searching, reranking, generating..."):
                 try:
                     result = st.session_state.rag_engine.ask(
                         prompt,
                         api_key=st.session_state.api_key,
                         model=st.session_state.llm_model,
+                        chat_history=st.session_state.messages,
                     )
                     answer = result["answer"]
                     sources = result["sources"]

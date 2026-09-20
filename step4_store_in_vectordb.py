@@ -70,7 +70,7 @@ def store_in_vectordb(chunks: list[dict]) -> chromadb.Collection:
     print(f"Creating collection: {COLLECTION_NAME}")
     collection = client.get_or_create_collection(
         name=COLLECTION_NAME,
-        metadata={"description": "IT Support documents for RAG demo"},
+        metadata={"hf:space": "cosine"},
     )
 
     # Step 3: Prepare the data for ChromaDB

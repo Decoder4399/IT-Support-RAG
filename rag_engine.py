@@ -1,8 +1,11 @@
 """
-RAG ENGINE: THE FULL PIPELINE
-Combines all 6 steps into one complete RAG pipeline.
+RAG ENGINE: ADVANCED RAG PIPELINE
+Combines all steps into a complete Advanced RAG pipeline:
+  Build:  Load → Chunk (token-aware) → Embed → Store (cosine)
+  Query:  Rewrite → Hybrid Search → Rerank → Generate (with memory)
+
 Supports dynamic document loading, custom portal/helpline settings,
-and runtime API key / model configuration.
+conversation memory, and runtime API key / model configuration.
 """
 
 from pathlib import Path
@@ -11,6 +14,9 @@ from step2_chunk_documents import chunk_documents
 from step3_create_embeddings import create_embeddings, EMBEDDING_MODEL
 from step4_store_in_vectordb import store_in_vectordb, load_collection
 from step5_search_similar import search_similar_chunks
+from step5a_query_rewriting import rewrite_query
+from step5b_hybrid_search import hybrid_search
+from step5c_rerank import rerank_chunks
 from step6_generate_answer import generate_answer
 from sentence_transformers import SentenceTransformer
 
@@ -24,12 +30,13 @@ IMPORTANT RULES:
 2. If the context does not contain the answer, say you do not have enough information.
 3. Be concise and actionable - users want step-by-step solutions.
 4. When referencing a source, mention which document it came from.
+5. Use conversation history to understand follow-up questions.
 {custom_section}
 """
 
 
 class RAGEngine:
-    """Complete RAG pipeline combining all 6 steps."""
+    """Advanced RAG pipeline with query rewriting, hybrid search, and reranking."""
 
     def __init__(self):
         self.embedding_model = None
@@ -58,7 +65,7 @@ class RAGEngine:
     def build_knowledge_base(self, data_dir="knowledge_base"):
         """Build the knowledge base (Steps 1-4)."""
         print("=" * 60)
-        print("Building Knowledge Base")
+        print("Building Knowledge Base (Advanced RAG)")
         print("=" * 60)
 
         print(f"\n[Step 1] Loading documents from {data_dir}...")
@@ -67,7 +74,7 @@ class RAGEngine:
             raise ValueError(f"No documents found in '{data_dir}/' folder.")
         print(f"  Loaded {len(docs)} documents")
 
-        print("\n[Step 2] Chunking documents...")
+        print("\n[Step 2] Chunking documents (token-aware, markdown-aware)...")
         chunks = chunk_documents(docs)
         print(f"  Created {len(chunks)} chunks")
 
@@ -75,7 +82,7 @@ class RAGEngine:
         chunks, self.embedding_model = create_embeddings(chunks)
         print(f"  Created {len(chunks)} embeddings")
 
-        print("\n[Step 4] Storing in ChromaDB...")
+        print("\n[Step 4] Storing in ChromaDB (cosine distance)...")
         self.collection = store_in_vectordb(chunks)
         print(f"  Stored {self.collection.count()} chunks")
 
@@ -121,34 +128,85 @@ class RAGEngine:
             print("No existing knowledge base found. Building new one...")
             self.build_knowledge_base()
 
-    def ask(self, question, top_k=3, api_key="", model="meta-llama/llama-3.1-8b-instruct"):
+    def ask(
+        self,
+        question,
+        top_k=3,
+        api_key="",
+        model="meta-llama/llama-3.1-8b-instruct",
+        chat_history=None,
+    ):
         """
-        Ask a question and get an answer using the full RAG pipeline.
+        Ask a question using the Advanced RAG pipeline.
+
+        Pipeline: Rewrite → Hybrid Search → Rerank → Generate
 
         Args:
             question: The user's question
-            top_k: Number of chunks to retrieve
-            api_key: OpenRouter API key (from UI Settings)
-            model: LLM model name (from UI Settings)
+            top_k: Number of chunks to return after reranking
+            api_key: OpenRouter API key
+            model: LLM model name
+            chat_history: Previous conversation turns
+
+        Returns:
+            dict with answer, sources, query, and pipeline metadata
         """
         if self.collection is None:
             self.load_existing_knowledge_base()
 
-        print(f"\n[Step 5] Searching for relevant chunks...")
-        chunks = search_similar_chunks(question, top_k=top_k, model=self.embedding_model)
-        print(f"  Found {len(chunks)} relevant chunks")
+        pipeline_info = {}
 
+        # Step 5a: Query Rewriting
+        print(f"\n[Step 5a] Rewriting query...")
+        rewritten = rewrite_query(
+            question, chat_history=chat_history,
+            api_key=api_key, model=model,
+        )
+        print(f"  Original: {rewritten['original']}")
+        print(f"  Rewritten: {rewritten['rewritten']}")
+        print(f"  Keywords: {rewritten['keywords']}")
+        pipeline_info["rewritten_query"] = rewritten["rewritten"]
+        pipeline_info["keywords"] = rewritten["keywords"]
+
+        # Step 5b: Hybrid Search (semantic + BM25)
+        print(f"\n[Step 5b] Hybrid search (semantic + keyword)...")
+        candidates = hybrid_search(
+            rewritten["rewritten"],
+            keywords=rewritten["keywords"],
+            top_k=top_k * 3,
+            model=self.embedding_model,
+        )
+        print(f"  Found {len(candidates)} candidates")
+
+        # Step 5c: Rerank with cross-encoder
+        print(f"\n[Step 5c] Reranking with cross-encoder...")
+        final_chunks = rerank_chunks(
+            rewritten["rewritten"],
+            candidates,
+            top_k=top_k,
+        )
+        print(f"  Reranked to {len(final_chunks)} chunks")
+        for i, chunk in enumerate(final_chunks, 1):
+            print(f"    {i}. {chunk['filename']} (rerank_score: {chunk.get('rerank_score', 'N/A')})")
+
+        # Step 6: Generate Answer (with conversation history)
         print(f"\n[Step 6] Generating answer...")
         system_prompt = self._get_system_prompt()
         answer = generate_answer(
-            question, chunks,
+            question, final_chunks,
             system_prompt=system_prompt,
             api_key=api_key,
             model=model,
+            chat_history=chat_history,
         )
         print(f"  Generated answer ({len(answer)} characters)")
 
-        return {"answer": answer, "sources": chunks, "query": question}
+        return {
+            "answer": answer,
+            "sources": final_chunks,
+            "query": question,
+            "pipeline": pipeline_info,
+        }
 
 
 if __name__ == "__main__":

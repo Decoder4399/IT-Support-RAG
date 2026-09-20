@@ -1,33 +1,27 @@
 """
-=============================================================================
-STEP 6: GENERATE ANSWER WITH LLM
-=============================================================================
+ =============================================================================
+ STEP 6: GENERATE ANSWER WITH LLM (ADVANCED RAG)
+ =============================================================================
 
-WHAT IS THIS STEP?
-    We take the relevant chunks found in Step 5 and send them along with
-    the user's question to a Large Language Model (LLM). The LLM reads
-    the context and generates a helpful answer.
+ WHAT IS THIS STEP?
+     We take the reranked chunks and send them along with the user's
+     question (and chat history) to an LLM for answer generation.
 
-WHY DO WE NEED THIS?
-    - Retrieved chunks alone are just raw text
-    - The LLM synthesizes information from multiple chunks
-    - It generates a natural language answer
-    - It can cite which source documents it used
+ ADVANCED IMPROVEMENTS:
+     - Conversation memory: last 5 turns included in prompt
+     - Context-aware answers that reference previous questions
+     - Better prompt engineering for step-by-step IT answers
 
-THE RAG PIPELINE (YOU ARE HERE: Step 6 of 6):
-    Step 1: Load documents      (done)
-    Step 2: Chunk documents     (done)
-    Step 3: Create embeddings   (done)
-    Step 4: Store in vector DB  (done)
-    Step 5: Search similar      (done)
-    Step 6: Generate answer     <-- YOU ARE HERE
-=============================================================================
+ THE RAG PIPELINE (YOU ARE HERE: Step 6 of 6):
+     Step 1-4: Build phase (done)
+     Step 5a-5c: Advanced retrieval (done)
+     Step 6: Generate answer  <-- YOU ARE HERE
+ =============================================================================
 """
 
 from openai import OpenAI
 
 
-# Default system prompt (can be overridden with custom portal/helpline info)
 DEFAULT_SYSTEM_PROMPT = """You are a helpful IT Support Assistant. You answer questions about
 IT issues like password resets, VPN problems, email issues, printer setup,
 software installation, and WiFi connectivity.
@@ -37,6 +31,8 @@ IMPORTANT RULES:
 2. If the context does not contain the answer, say you do not have enough information.
 3. Be concise and actionable - users want step-by-step solutions.
 4. When referencing a source, mention which document it came from.
+5. If the user asks a follow-up question, use conversation history for context.
+{custom_section}
 """
 
 
@@ -46,16 +42,18 @@ def generate_answer(
     system_prompt: str = None,
     api_key: str = "",
     model: str = "meta-llama/llama-3.1-8b-instruct",
+    chat_history: list[dict] = None,
 ) -> str:
     """
-    Generate an answer using the LLM with retrieved context.
+    Generate an answer using the LLM with retrieved context and conversation history.
 
     Args:
         query: The user's question
-        context_chunks: List of relevant chunks from Step 5
+        context_chunks: Reranked relevant chunks from Step 5c
         system_prompt: Optional custom system prompt
-        api_key: OpenRouter API key (passed from UI)
-        model: LLM model name (passed from UI)
+        api_key: OpenRouter API key
+        model: LLM model name
+        chat_history: Previous conversation turns
 
     Returns:
         The LLM's generated answer as a string
@@ -66,6 +64,20 @@ def generate_answer(
 
     context = format_context(context_chunks)
 
+    # Build messages with conversation history
+    messages = [
+        {"role": "system", "content": system_prompt or DEFAULT_SYSTEM_PROMPT},
+    ]
+
+    # Add last 5 turns of history for context
+    if chat_history:
+        for msg in chat_history[-5:]:
+            messages.append({
+                "role": msg["role"],
+                "content": msg["content"][:500],  # truncate long messages
+            })
+
+    # Add current query with context
     user_prompt = f"""Answer the following question based on the provided context.
 
 ## Question
@@ -79,19 +91,15 @@ def generate_answer(
 - Cite your sources when possible.
 - If the context doesn't contain the answer, say so clearly.
 - Be specific and provide step-by-step guidance where possible.
+- If this is a follow-up question, use the conversation history for context.
 """
+    messages.append({"role": "user", "content": user_prompt})
 
-    client = OpenAI(
-        api_key=api_key,
-        base_url="https://openrouter.ai/api/v1",
-    )
+    client = OpenAI(api_key=api_key, base_url="https://openrouter.ai/api/v1")
 
     response = client.chat.completions.create(
         model=model,
-        messages=[
-            {"role": "system", "content": system_prompt or DEFAULT_SYSTEM_PROMPT},
-            {"role": "user", "content": user_prompt},
-        ],
+        messages=messages,
         temperature=0.3,
         max_tokens=1000,
     )
@@ -100,18 +108,20 @@ def generate_answer(
 
 
 def format_context(chunks: list[dict]) -> str:
-    """Format retrieved chunks into a context string for the LLM."""
+    """Format reranked chunks into a context string for the LLM."""
     context_parts = []
     for i, chunk in enumerate(chunks, 1):
         filename = chunk.get("filename", "unknown")
-        score = chunk.get("score", 0)
+        score = chunk.get("rerank_score") or chunk.get("score", 0)
         content = chunk.get("content", "")
+        section = chunk.get("section", "")
+        header = f" [Section: {section}]" if section else ""
         context_parts.append(
-            f"[Document {i}: {filename} (relevance: {score:.2f})]\n{content}\n"
+            f"[Document {i}: {filename}{header} (relevance: {score:.2f})]\n{content}\n"
         )
     return "\n---\n\n".join(context_parts)
 
 
 if __name__ == "__main__":
-    print("Step 6: Generate Answer with LLM (standalone test)")
+    print("Step 6: Generate Answer with LLM (Advanced RAG)")
     print("Run the full pipeline with: python rag_engine.py")

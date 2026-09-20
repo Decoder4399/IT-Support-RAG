@@ -1,38 +1,26 @@
 """
-=============================================================================
-STEP 5: SEARCH SIMILAR CHUNKS
-=============================================================================
+ =============================================================================
+ STEP 5: SEARCH SIMILAR CHUNKS (ADVANCED RAG)
+ =============================================================================
 
-WHAT IS THIS STEP?
-    When a user asks a question, we convert it to an embedding and search
-    the vector database for the most similar chunks. These are the most
-    relevant pieces of information for answering the question.
+ WHAT IS THIS STEP?
+     Find the most relevant chunks for a user's question using cosine
+     similarity search with score thresholding and deduplication.
 
-WHY DO WE NEED THIS?
-    - The user's question needs to be matched against our knowledge base
-    - Vector similarity finds chunks that are semantically related
-    - This is much better than keyword search because it understands meaning
-    - For example: "forgot my password" matches "password reset procedure"
+ ADVANCED IMPROVEMENTS:
+     - Cosine similarity (proper distance metric)
+     - Score threshold: discard results below 0.3 similarity
+     - Deduplication: only keep best chunk per source document
 
-HOW DOES SIMILARITY SEARCH WORK?
-    1. Convert the user's question to an embedding vector
-    2. Compare this vector to ALL stored chunk vectors
-    3. Calculate similarity score (cosine similarity)
-    4. Return the top-N most similar chunks
-    5. Higher score = more relevant
-
-THE RAG PIPELINE (YOU ARE HERE: Step 5 of 6):
-    Step 1: Load documents      (done)
-    Step 2: Chunk documents     (done)
-    Step 3: Create embeddings   (done)
-    Step 4: Store in vector DB  (done)
-    Step 5: Search similar      <-- YOU ARE HERE
-    Step 6: Generate answer     (LLM creates answer from context)
-=============================================================================
+ THE RAG PIPELINE (YOU ARE HERE: Step 5 of 6):
+     Step 1-4: Build phase (done)
+     Step 5: Search similar  <-- YOU ARE HERE
+     Step 6: Generate answer
+ =============================================================================
 """
 
 from sentence_transformers import SentenceTransformer
-from step4_store_in_vectordb import load_collection, CHROMA_PERSIST_DIR, COLLECTION_NAME
+from step4_store_in_vectordb import load_collection
 from step3_create_embeddings import EMBEDDING_MODEL
 
 
@@ -40,109 +28,76 @@ def search_similar_chunks(
     query: str,
     top_k: int = 3,
     model: SentenceTransformer = None,
+    score_threshold: float = 0.3,
 ) -> list[dict]:
     """
-    Find the most relevant chunks for a user's question.
+    Find the most relevant chunks with score filtering and deduplication.
 
     Args:
-        query: The user's question (e.g., "How do I reset my password?")
+        query: The user's question
         top_k: How many chunks to return (default 3)
         model: The embedding model (loaded if not provided)
+        score_threshold: Minimum similarity score to keep (default 0.3)
 
     Returns:
-        List of relevant chunks with similarity scores:
-        [
-            {
-                "chunk_id": "password_reset.md::2",
-                "filename": "password_reset.md",
-                "content": "To reset your password, go to...",
-                "score": 0.85,           <- similarity score (higher = more relevant)
-                "metadata": {...}        <- extra info about the chunk
-            },
-            ...
-        ]
-
-    HOW IT WORKS:
-        1. Load the embedding model (or reuse the provided one)
-        2. Convert the query text to an embedding vector
-        3. Load the ChromaDB collection
-        4. Query the collection with the query embedding
-        5. Return the results with similarity scores
+        Filtered, deduplicated list of relevant chunks
     """
-    # Step 1: Load the embedding model
     if model is None:
-        print(f"Loading embedding model: {EMBEDDING_MODEL}")
         model = SentenceTransformer(EMBEDDING_MODEL)
 
-    # Step 2: Convert query to embedding
-    print(f"Searching for: '{query}'")
     query_embedding = model.encode([query]).tolist()
-
-    # Step 3: Load the vector database
-    print("Loading vector database...")
     collection = load_collection()
 
-    # Step 4: Search for similar chunks
-    # query_embeddings: the vector to search for
-    # n_results: how many results to return
-    # include: what data to return (documents, metadata, distances)
+    # Retrieve more candidates for filtering
+    n_candidates = min(top_k * 3, collection.count())
     results = collection.query(
         query_embeddings=query_embedding,
-        n_results=top_k,
+        n_results=n_candidates,
         include=["documents", "metadatas", "distances"],
     )
 
-    # Step 5: Format the results
-    formatted_results = []
+    # Format results with cosine similarity scores
+    candidates = []
     for i in range(len(results["ids"][0])):
-        # ChromaDB returns distances (lower = more similar)
-        # Convert to a similarity score (higher = more similar)
+        # With cosine metric, distance is 1 - cosine_similarity
         distance = results["distances"][0][i]
-        similarity = 1 - distance  # Convert distance to similarity
+        similarity = 1 - distance
 
-        formatted_results.append({
+        if similarity < score_threshold:
+            continue
+
+        candidates.append({
             "chunk_id": results["ids"][0][i],
-            "filename": results["metadatas"][0][i]["filename"],
+            "filename": results["metadatas"][0][i].get("filename", "unknown"),
             "content": results["documents"][0][i],
             "score": round(similarity, 4),
             "metadata": results["metadatas"][0][i],
+            "section": results["metadatas"][0][i].get("section", ""),
         })
 
-    return formatted_results
+    # Deduplication: keep only the best chunk per source file
+    deduplicated = _deduplicate_by_source(candidates)
+
+    return deduplicated[:top_k]
+
+
+def _deduplicate_by_source(chunks: list[dict]) -> list[dict]:
+    """Keep only the highest-scoring chunk per source file."""
+    best_per_file = {}
+    for chunk in chunks:
+        fname = chunk["filename"]
+        if fname not in best_per_file or chunk["score"] > best_per_file[fname]["score"]:
+            best_per_file[fname] = chunk
+    return list(best_per_file.values())
 
 
 # ---------------------------------------------------------------------------
-# RUN THIS SCRIPT STANDALONE TO SEE STEP 5 IN ACTION
+# RUN THIS SCRIPT STANDALONE
 # ---------------------------------------------------------------------------
 if __name__ == "__main__":
     print("=" * 60)
-    print("STEP 5: Searching Similar Chunks")
+    print("STEP 5: Searching Similar Chunks (Advanced RAG)")
     print("=" * 60)
     print()
-
-    # Test queries to demonstrate the search
-    test_queries = [
-        "How do I reset my password?",
-        "My VPN won't connect, what should I do?",
-        "Printer is showing offline",
-        "How to install new software?",
-        "WiFi is very slow",
-    ]
-
-    for query in test_queries:
-        print("-" * 60)
-        results = search_similar_chunks(query, top_k=2)
-
-        print(f"\nQuery: {query}")
-        print(f"Found {len(results)} relevant chunks:\n")
-
-        for i, result in enumerate(results, 1):
-            print(f"  {i}. {result['filename']} (score: {result['score']:.4f})")
-            preview = result["content"][:150].replace("\n", " ")
-            print(f"     {preview}...")
-            print()
-
-    print("=" * 60)
-    print("Step 5 Complete!")
-    print("These chunks will be sent to the LLM as context in Step 6.")
+    print("Run the full pipeline with: python rag_engine.py")
     print("=" * 60)
